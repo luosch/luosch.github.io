@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="生活,技术," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近有点无聊，于是想研究一下微信公众号，发现免费的应用就只有订阅号了 于是把微信订阅号和上学期做的刷课脚本结合一下，中大课程助手（公众号）就完成了 开发环境 杂牌电脑一台（win 8） python，使用 flask 框架做后台处理 笔和纸  ###微信公众号申请去微信公众平台提交订阅号的申请（还要交身份证照片，怕怕的）">
+<meta name="keywords" content="生活,技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中大课程助手">
+<meta property="og:url" content="http://lsich.com/2014/sysucuorse-helper/index.html">
+<meta property="og:site_name" content="Danny&#39;s Blog">
+<meta property="og:description" content="最近有点无聊，于是想研究一下微信公众号，发现免费的应用就只有订阅号了 于是把微信订阅号和上学期做的刷课脚本结合一下，中大课程助手（公众号）就完成了 开发环境 杂牌电脑一台（win 8） python，使用 flask 框架做后台处理 笔和纸  ###微信公众号申请去微信公众平台提交订阅号的申请（还要交身份证照片，怕怕的）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lsich.com/resource/12.jpg">
+<meta property="og:image" content="http://lsich.com/resource/14.jpg">
+<meta property="og:updated_time" content="2018-04-21T14:56:59.018Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="中大课程助手">
+<meta name="twitter:description" content="最近有点无聊，于是想研究一下微信公众号，发现免费的应用就只有订阅号了 于是把微信订阅号和上学期做的刷课脚本结合一下，中大课程助手（公众号）就完成了 开发环境 杂牌电脑一台（win 8） python，使用 flask 框架做后台处理 笔和纸  ###微信公众号申请去微信公众平台提交订阅号的申请（还要交身份证照片，怕怕的）">
+<meta name="twitter:image" content="http://lsich.com/resource/12.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lsich.com/2014/sysucuorse-helper/"/>
+
+
+
+
+
+  <title>中大课程助手 | Danny's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Danny's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lsich.com/2014/sysucuorse-helper/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Danny Luo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Danny's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">中大课程助手</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2014-12-24T11:19:43+08:00">
+                2014-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近有点无聊，于是想研究一下微信公众号，发现免费的应用就只有订阅号了</p>
+<p>于是把微信订阅号和上学期做的刷课脚本结合一下，中大课程助手（公众号）就完成了</p>
+<h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><ol>
+<li>杂牌电脑一台（win 8）</li>
+<li>python，使用 flask 框架做后台处理</li>
+<li>笔和纸</li>
+</ol>
+<p>###微信公众号申请<br>去<a href="http://mp.weixin.qq.com" target="_blank" rel="noopener">微信公众平台</a>提交订阅号的申请（还要交身份证照片，怕怕的）</p>
+<a id="more"></a>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>发张公众号原理图<br><img src="/resource/12.jpg" alt=""><br>我们的后台都是处理微信服务器转发的请求</p>
+<h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><p>开发者提交信息后，微信服务器将发送GET请求到填写的URL上，GET请求携带四个参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>signature</td>
+<td style="text-align:center">微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数。</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td style="text-align:center">时间戳</td>
+</tr>
+<tr>
+<td>nonce</td>
+<td style="text-align:center">随机数</td>
+</tr>
+<tr>
+<td>echostr</td>
+<td style="text-align:center">随机字符串</td>
+</tr>
+</tbody>
+</table>
+<p>开发者通过检验signature对请求进行校验（下面有校验方式）。若确认此次GET请求来自微信服务器，请原样返回echostr参数内容，则接入生效，成为开发者成功，否则接入失败。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">加密/校验流程如下：</span><br><span class="line">1. 将token、timestamp、nonce三个参数进行字典序排序</span><br><span class="line">2. 将三个参数字符串拼接成一个字符串进行sha1加密</span><br><span class="line">3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信</span><br></pre></td></tr></table></figure></p>
+<p>我写的进行校验的代码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="comment"># 微信公众号验证</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSignature</span><span class="params">(token, timestamp, nonce, signature)</span>:</span></span><br><span class="line">    tmpStr = reduce(<span class="keyword">lambda</span> x, y: x + y, sorted([token, timestamp, nonce]))</span><br><span class="line">    <span class="keyword">return</span> hashlib.sha1(tmpStr).hexdigest() == signature</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weixin</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 验证信息</span></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">'GET'</span>:</span><br><span class="line"></span><br><span class="line">        signature = request.args.get(<span class="string">'signature'</span>, <span class="string">''</span>)</span><br><span class="line">        timestamp = request.args.get(<span class="string">'timestamp'</span>, <span class="string">''</span>)</span><br><span class="line">        nonce = request.args.get(<span class="string">'nonce'</span>, <span class="string">''</span>)</span><br><span class="line">        echostr = request.args.get(<span class="string">'echostr'</span>, <span class="string">''</span>)</span><br><span class="line">        <span class="keyword">if</span> (signature == <span class="string">''</span> <span class="keyword">or</span> timestamp == <span class="string">''</span> <span class="keyword">or</span> nonce == <span class="string">''</span> <span class="keyword">or</span> echostr == <span class="string">''</span>):</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"error"</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> checkSignature(token, timestamp, nonce, signature):</span><br><span class="line">                <span class="keyword">return</span> echostr;</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"error"</span></span><br></pre></td></tr></table></figure></p>
+<p>详细的认证方法可以去<a href="http://mp.weixin.qq.com/wiki/home/index.html" target="_blank" rel="noopener">开发者文档</a>了解</p>
+<h3 id="读取课程信息"><a href="#读取课程信息" class="headerlink" title="读取课程信息"></a>读取课程信息</h3><p>一开始想去旧的教务系统爬信息，发现抓取回来的 html 是空的，需要 js 进行渲染，遂放弃</p>
+<p>转战新的<a href="http://uems.sysu.edu.cn/elect" target="_blank" rel="noopener">教务系统</a>，里面的“我的选课结果”就是本学期的课程<br>原理就是用你的账号密码登录，选课网站会返回一个 sid 凭证，在 url 和 response 里面都有，有了这个 sid 就可以到处访问了</p>
+<p>爬虫代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># get the sid</span></span><br><span class="line">loginUrl = <span class="string">"http://uems.sysu.edu.cn/elect/login"</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(stuNum, stuPasswd)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># set cookie</span></span><br><span class="line">        cookie = cookielib.CookieJar()</span><br><span class="line">        cookieProc = urllib2.HTTPCookieProcessor(cookie)</span><br><span class="line">        opener = urllib2.build_opener(cookieProc)</span><br><span class="line">        urllib2.install_opener(opener)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># login</span></span><br><span class="line">        user = urllib.urlencode(&#123;<span class="string">'username'</span>: stuNum, <span class="string">'password'</span>: stuPasswd&#125;)</span><br><span class="line">        req = urllib2.Request(loginUrl, user)</span><br><span class="line">        res = urllib2.urlopen(req)</span><br><span class="line">        sid = res.geturl().replace(<span class="string">'http://uems.sysu.edu.cn/elect/s/types?sid='</span>, <span class="string">''</span>)</span><br><span class="line">        <span class="keyword">return</span> sid</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> urllib2.HTTPError, e:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># get the course list</span></span><br><span class="line">courseUrl = <span class="string">'http://uems.sysu.edu.cn/elect/s/courseAll?xnd=%s&amp;xq=%s&amp;sid=%s'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getCourseList</span><span class="params">(sid, number)</span>:</span></span><br><span class="line">    req = urllib2.Request(courseUrl % (<span class="string">"2014-2015"</span>, <span class="string">"2"</span>, sid))</span><br><span class="line">    res = urllib2.urlopen(req)</span><br><span class="line">    content = res.read()</span><br><span class="line">    cut = content.find(<span class="string">"toolbarTuitionMessage"</span>)</span><br><span class="line">    data = listName()</span><br><span class="line">    data.feed(content[cut:].replace(<span class="string">"&lt;td class='c'&gt;&lt;/td&gt;"</span>, <span class="string">"&lt;td class='c'&gt;1&lt;/td&gt;"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(<span class="string">"cache/%s.html"</span> % number):</span><br><span class="line">        <span class="keyword">print</span> &gt;&gt; open(<span class="string">"cache/%s.html"</span> % number, <span class="string">"w"</span>), content[cut:].replace(<span class="string">"&lt;td class='c'&gt;&lt;/td&gt;"</span>, <span class="string">"&lt;td class='c'&gt;1&lt;/td&gt;"</span>)</span><br><span class="line"></span><br><span class="line">    courseList = []</span><br><span class="line">    <span class="keyword">for</span> index, item <span class="keyword">in</span> enumerate(data.tdList):</span><br><span class="line">        courseIndex = index / <span class="number">14</span></span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">14</span> == <span class="number">3</span>:</span><br><span class="line">            courseList.append(&#123;<span class="string">'name'</span>: item.decode(<span class="string">"utf-8"</span>).encode(<span class="string">"gbk"</span>)&#125;)</span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">14</span> == <span class="number">7</span>:</span><br><span class="line">            courseList[courseIndex][<span class="string">'time'</span>] = item.decode(<span class="string">"utf-8"</span>).encode(<span class="string">"gbk"</span>)</span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">14</span> == <span class="number">9</span>:</span><br><span class="line">            courseList[courseIndex][<span class="string">'teacher'</span>] = item.decode(<span class="string">"utf-8"</span>).encode(<span class="string">"gbk"</span>)</span><br><span class="line">    <span class="keyword">return</span> courseList</span><br></pre></td></tr></table></figure>
+<h3 id="调试接口"><a href="#调试接口" class="headerlink" title="调试接口"></a>调试接口</h3><p>微信的在线调试工具是针对对已经上线的公众号，我写了个简单的调试脚本<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib2, time, parse</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://localhost:8000"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">        data = <span class="string">"&lt;xml&gt;"</span></span><br><span class="line">        data += <span class="string">"&lt;ToUserName&gt;&lt;![CDATA[sysucc]]&gt;&lt;/ToUserName&gt;"</span> <span class="comment"># % raw_input("ToUserName: ")</span></span><br><span class="line">        data += <span class="string">"&lt;FromUserName&gt;&lt;![CDATA[%s]]&gt;&lt;/FromUserName&gt;"</span> % raw_input(<span class="string">"FromUserName: "</span>)</span><br><span class="line">        data += <span class="string">"&lt;CreateTime&gt;%s&lt;/CreateTime&gt;"</span> % str(int(time.time()))</span><br><span class="line">        data += <span class="string">"&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;"</span></span><br><span class="line">        data += <span class="string">"&lt;Content&gt;&lt;![CDATA[%s]]&gt;&lt;/Content&gt;"</span> % raw_input(<span class="string">"Content: "</span>)</span><br><span class="line">        data += <span class="string">"&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;"</span></span><br><span class="line">        data += <span class="string">"&lt;/xml&gt;"</span></span><br><span class="line"></span><br><span class="line">        req = urllib2.Request(url, data, &#123;<span class="string">"Content-type"</span> : <span class="string">"text/xml"</span>&#125;)</span><br><span class="line">        res = urllib2.urlopen(req)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">print</span> res.read().decode(<span class="string">"utf-8"</span>).encode(<span class="string">"gbk"</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>一开始很傻很天真的使用了 mysql 存储网站信息，结果发现太慢了，于是全部存在文本里面<br>代码都放在<a href="https://github.com/luosch/sysucourse" target="_blank" rel="noopener">github</a>上面</p>
+<h3 id="欢迎关注"><a href="#欢迎关注" class="headerlink" title="欢迎关注"></a>欢迎关注</h3><p><img src="/resource/14.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/生活/" rel="tag"># 生活</a>
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/Geolocation-API/" rel="next" title="Geolocation API">
+                <i class="fa fa-chevron-left"></i> Geolocation API
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/linked-list-cycle/" rel="prev" title="判断链表是否有环">
+                判断链表是否有环 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Danny Luo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#开发环境"><span class="nav-number">1.</span> <span class="nav-text">开发环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认证"><span class="nav-number">3.</span> <span class="nav-text">认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取课程信息"><span class="nav-number">4.</span> <span class="nav-text">读取课程信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试接口"><span class="nav-number">5.</span> <span class="nav-text">调试接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">6.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#欢迎关注"><span class="nav-number">7.</span> <span class="nav-text">欢迎关注</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Danny Luo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
