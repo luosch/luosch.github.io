@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lsich.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. 前言目前大部分的iOS应用的列表都带有下拉刷新的功能，这个功能一般是用来获取更多的数据并填充到现有的列表中，当然下拉这个动作也可以带出其他的操作，例如旧版微信在消息列表下拉可以拍视频 要研究下拉刷新这个功能，首先要了解iOS中的列表视图，绝大部分的iOS app 的列表都是 UITableView，而 UITableView 继承于 UIScrollView，许多的滑动操作都是在 UIScr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中的下拉刷新">
+<meta property="og:url" content="http://lsich.com/2016/pull-to-refresh/index.html">
+<meta property="og:site_name" content="Danny&#39;s Blog">
+<meta property="og:description" content="1. 前言目前大部分的iOS应用的列表都带有下拉刷新的功能，这个功能一般是用来获取更多的数据并填充到现有的列表中，当然下拉这个动作也可以带出其他的操作，例如旧版微信在消息列表下拉可以拍视频 要研究下拉刷新这个功能，首先要了解iOS中的列表视图，绝大部分的iOS app 的列表都是 UITableView，而 UITableView 继承于 UIScrollView，许多的滑动操作都是在 UIScr">
+<meta property="og:locale">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-1.png">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-2.png">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-3.png">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-4.png">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-5.jpg">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-6.jpg">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-7.jpg">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-8.jpg">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-9.jpg">
+<meta property="og:image" content="http://lsich.com/resource/Pull-To-Refresh-10.jpg">
+<meta property="og:image" content="http://lsich.com/resource/ptr.gif">
+<meta property="article:published_time" content="2016-07-18T07:18:28.000Z">
+<meta property="article:modified_time" content="2022-03-31T02:17:52.827Z">
+<meta property="article:author" content="Danny Luo">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lsich.com/resource/Pull-To-Refresh-1.png">
+
+<link rel="canonical" href="http://lsich.com/2016/pull-to-refresh/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>iOS中的下拉刷新 | Danny's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Danny's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://lsich.com/2016/pull-to-refresh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Danny Luo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Danny's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS中的下拉刷新
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-07-18 15:18:28" itemprop="dateCreated datePublished" datetime="2016-07-18T15:18:28+08:00">2016-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-31 10:17:52" itemprop="dateModified" datetime="2022-03-31T10:17:52+08:00">2022-03-31</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>目前大部分的iOS应用的列表都带有下拉刷新的功能，这个功能一般是用来获取更多的数据并填充到现有的列表中，当然下拉这个动作也可以带出其他的操作，例如旧版微信在消息列表下拉可以拍视频</p>
+<p>要研究下拉刷新这个功能，首先要了解iOS中的列表视图，绝大部分的iOS app 的列表都是 UITableView，而 UITableView 继承于 UIScrollView，许多的滑动操作都是在 UIScrollView 中进行处理，包括我们的下拉动作，所以有必要仔细研究一下 UIScrollView 这个 UI控件</p>
+<a id="more"></a>
+<h3 id="2-UIScrollView"><a href="#2-UIScrollView" class="headerlink" title="2. UIScrollView"></a>2. UIScrollView</h3><p>UIScrollVie是UIView的一个子类，在要想弄懂 UIScrollView 是怎么工作之前，需要先了解一下 UIView，特别是视图渲染的两个步骤：</p>
+<h4 id="2-1-光栅化（Rasterization）"><a href="#2-1-光栅化（Rasterization）" class="headerlink" title="2.1 光栅化（Rasterization）"></a>2.1 光栅化（Rasterization）</h4><p>在光栅化步骤中，视图不关心自己显示的位置，只专注于绘制自己的content。</p>
+<p><img src="/resource/Pull-To-Refresh-1.png" alt=""></p>
+<p>在drawRect：方法被调用前，会为视图创建一个空白的图片来绘制content。该图片的坐标系统是视图的bounds。视图默认的bounds是{0，0，width，height}，超出该范围的部分会被舍弃。</p>
+<h3 id="2-2-组合（Composition）"><a href="#2-2-组合（Composition）" class="headerlink" title="2.2 组合（Composition）"></a>2.2 组合（Composition）</h3><p>在该步骤中，每个视图将自己光栅化的图片组合到自己父视图（superView）的光栅化图片上面。视图的frame决定了自己在父视图上的位置，frame的origin表明了视图光栅化图片左上角相对于父视图光栅化图片左上角的偏移量。一旦这两个视图被组合到一起，组合的结果图片将会和父视图的父视图（superView.superView）进行组合，这是一个雪球效应。</p>
+<p><img src="/resource/Pull-To-Refresh-2.png" alt=""></p>
+<p>可以推导出公式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CompositedPosition.x = View.frame.origin.x - SuperView.bounds.origin.x;</span><br><span class="line"></span><br><span class="line">CompositedPosition.y = View.frame.origin.y - SuperView.bounds.origin.y;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-UIScrollView的三个属性"><a href="#2-3-UIScrollView的三个属性" class="headerlink" title="2.3 UIScrollView的三个属性"></a>2.3 UIScrollView的三个属性</h3><p>接下来我们研究一下下拉刷新中会用到的三个属性</p>
+<h4 id="contentOffset"><a href="#contentOffset" class="headerlink" title="contentOffset"></a>contentOffset</h4><p>contentOffset描述了内容视图相对于scrollView窗口的位置(向上向左的偏移量)。默认值是CGPointZero，也就是(0,0)。当视图被拖动时，系统会不断修改该值。也可以通 setContentOffset:animated:方法让图片到达某个指定的位置。</p>
+<p><img src="/resource/Pull-To-Refresh-3.png" alt=""></p>
+<p>以上图为例，Visible Area 的 contentOffset 为 {x: -80, y: -40}, 这是他与scrollView的origin的偏移量，当我们向下滑动10个单位像素，contentOffset的y值会变为-50，因为向下滑动这个动作使得ScrollView在往上走，偏移量的差值增大</p>
+<p>同样地，当我们把列表往下拉的时候，contentOffset的y值会减小（因为内容视图相对于scrollView在往下走）</p>
+<h4 id="contentSize"><a href="#contentSize" class="headerlink" title="contentSize"></a>contentSize</h4><p>描述了有多大范围的内容需要使用scrollView的窗口来显示，其默认值为CGSizeZero，也就是一个宽和高都是0的范围。</p>
+<p>content size不会改变其bounds的大小，只是定义了可以滚动的区域。 我们在使用UIScrollView时，需要设置其content size的值大于bounds的值，否则就不能滚动。当contentSize设置的比bounds大的时候，用户就可以滚动视图了</p>
+<h4 id="contentInset"><a href="#contentInset" class="headerlink" title="contentInset"></a>contentInset</h4><p>表示scrollView的内边距，也就是内容视图边缘和scrollView的边缘的留空距离，默认值是UIEdgeInsetsZero，也就是没间距。通常在需要刷新内容时才用得到</p>
+<p>contentInset的一个使用场景是，键盘弹出时，会遮挡住很大一部分界面上的内容。但是，如果将contentInset的底部设为键盘的高度，这样就能显示被键盘遮挡住的部分。</p>
+<p><img src="/resource/Pull-To-Refresh-4.png" alt=""></p>
+<h3 id="3-组件框架"><a href="#3-组件框架" class="headerlink" title="3. 组件框架"></a>3. 组件框架</h3><p>组件框架分为两部分，是动画组件，是组件核心部分，处理下拉和加载动画的逻辑；另一部分是扩展接口，因为UITableView的继承自UIScrollView，所以可以用UIScrollView的扩展来实现下拉刷新的接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── AnimatedGifActivityIndicator.h =&gt; 动画组件</span><br><span class="line">├── AnimatedGifActivityIndicator.m</span><br><span class="line">├── UIScrollView+PullToRefresh.h   =&gt; 扩展接口</span><br><span class="line">└── UIScrollView+PullToRefresh.m</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-状态机"><a href="#3-1-状态机" class="headerlink" title="3.1 状态机"></a>3.1 状态机</h3><p>在实现下拉刷新功能之前，先确定各个状态和他们之间的转换关系，状态图如下所示：</p>
+<p><img src="/resource/Pull-To-Refresh-5.jpg" alt=""></p>
+<p>对于状态转换相关的控制，主要是由scrollViewDidScroll这个函数处理，具体函数如下：</p>
+<p><img src="/resource/Pull-To-Refresh-6.jpg" alt=""></p>
+<p>其中contentOffset就是前文提过的偏移量，而self.progressThreshold是初始化时设置的下拉阀值，下拉幅度达到这个阀值，就认为下拉幅度达到100%</p>
+<p>为了使状态转换能实时地进行，这里使用KVO（Key Value Observing）来监控scrollView的下拉幅度</p>
+<p><img src="/resource/Pull-To-Refresh-7.jpg" alt=""></p>
+<h3 id="3-2-接口部分"><a href="#3-2-接口部分" class="headerlink" title="3.2 接口部分"></a>3.2 接口部分</h3><p>为了让下拉刷新组件的调用方式更为简单，这里使用了UIScrollView扩展的方式来编写接口部分，接口方法主要有以下四个，前三个用来添加动画，最后一个方法用于终止动画</p>
+<p><img src="/resource/Pull-To-Refresh-8.jpg" alt=""></p>
+<h4 id="为扩展添加属性"><a href="#为扩展添加属性" class="headerlink" title="为扩展添加属性"></a>为扩展添加属性</h4><p>我们实现接口的方式是扩展（extension），而在objective-c中扩展是不能添加属性的，为了能拥有属性，这里使用了objc的runtime机制来动态添加属性，也就是动画组件AnimatedGifActivityIndicator</p>
+<p><img src="/resource/Pull-To-Refresh-9.jpg" alt=""></p>
+<h3 id="3-3-调用方式"><a href="#3-3-调用方式" class="headerlink" title="3.3 调用方式"></a>3.3 调用方式</h3><p>有了前面的铺垫，调用下拉刷新组件的方式变得十分简单</p>
+<p><img src="/resource/Pull-To-Refresh-10.jpg" alt=""></p>
+<p>上图是1中动画效果的实现代码，只要引入了扩展接口，即UIScrollView+PullToRefresh.h，就可以在tableview中使用添加动画这个接口方法。而加载动画需要调用者去主动停止，也就是代码最后一行的 stopPullToRefreshAnimation 方法</p>
+<h3 id="4-实现效果"><a href="#4-实现效果" class="headerlink" title="4. 实现效果"></a>4. 实现效果</h3><p><img src="/resource/ptr.gif" alt=""></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/sort/" rel="prev" title="排序算法学习">
+      <i class="fa fa-chevron-left"></i> 排序算法学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/2018-plan/" rel="next" title="2018">
+      2018 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-UIScrollView"><span class="nav-number">2.</span> <span class="nav-text">2. UIScrollView</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%85%89%E6%A0%85%E5%8C%96%EF%BC%88Rasterization%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 光栅化（Rasterization）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%BB%84%E5%90%88%EF%BC%88Composition%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">2.2 组合（Composition）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-UIScrollView%E7%9A%84%E4%B8%89%E4%B8%AA%E5%B1%9E%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">2.3 UIScrollView的三个属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#contentOffset"><span class="nav-number">4.1.</span> <span class="nav-text">contentOffset</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#contentSize"><span class="nav-number">4.2.</span> <span class="nav-text">contentSize</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#contentInset"><span class="nav-number">4.3.</span> <span class="nav-text">contentInset</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BB%84%E4%BB%B6%E6%A1%86%E6%9E%B6"><span class="nav-number">5.</span> <span class="nav-text">3. 组件框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">6.</span> <span class="nav-text">3.1 状态机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%8E%A5%E5%8F%A3%E9%83%A8%E5%88%86"><span class="nav-number">7.</span> <span class="nav-text">3.2 接口部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E6%89%A9%E5%B1%95%E6%B7%BB%E5%8A%A0%E5%B1%9E%E6%80%A7"><span class="nav-number">7.1.</span> <span class="nav-text">为扩展添加属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">3.3 调用方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="nav-number">9.</span> <span class="nav-text">4. 实现效果</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Danny Luo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Danny Luo</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

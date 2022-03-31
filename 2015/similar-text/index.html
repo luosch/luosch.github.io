@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lsich.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在某个项目中遇到判断字符串相似程度的需求，google 了一下，原来python标准库里面没有这样的函数，反而是 PHP 里面有一个similar_text()函数，果然PHP 是世界上最好的编程语言 函数原型similar_text 的原型是这样的 1int similar_text(string str1, string str2 [, float percent]) 他返回的是两个字符串中能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="两个字符串的匹配度">
+<meta property="og:url" content="http://lsich.com/2015/similar-text/index.html">
+<meta property="og:site_name" content="Danny&#39;s Blog">
+<meta property="og:description" content="在某个项目中遇到判断字符串相似程度的需求，google 了一下，原来python标准库里面没有这样的函数，反而是 PHP 里面有一个similar_text()函数，果然PHP 是世界上最好的编程语言 函数原型similar_text 的原型是这样的 1int similar_text(string str1, string str2 [, float percent]) 他返回的是两个字符串中能">
+<meta property="og:locale">
+<meta property="article:published_time" content="2015-12-14T04:49:51.000Z">
+<meta property="article:modified_time" content="2022-03-31T02:17:52.827Z">
+<meta property="article:author" content="Danny Luo">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://lsich.com/2015/similar-text/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>两个字符串的匹配度 | Danny's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Danny's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://lsich.com/2015/similar-text/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Danny Luo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Danny's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          两个字符串的匹配度
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-12-14 12:49:51" itemprop="dateCreated datePublished" datetime="2015-12-14T12:49:51+08:00">2015-12-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-31 10:17:52" itemprop="dateModified" datetime="2022-03-31T10:17:52+08:00">2022-03-31</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在某个项目中遇到判断字符串相似程度的需求，google 了一下，原来<code>python</code>标准库里面没有这样的函数，反而是 PHP 里面有一个<code>similar_text()</code>函数，<del>果然<code>PHP</code> 是世界上最好的编程语言</del></p>
+<h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p><code>similar_text</code> 的原型是这样的</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int similar_text(string str1, string str2 [, float percent])</span><br></pre></td></tr></table></figure>
+<p>他返回的是两个字符串中能匹配的字符数量，如果有第三个参数，就修改第三个参数的值为 [0, 100] 区间的一个浮点数，表示匹配程度</p>
+<a id="more"></a>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$number = similar_text(<span class="string">'aaaa'</span>, <span class="string">'aaaa'</span>, $percent);</span><br><span class="line">var_dump($number);  <span class="comment">// int(4)</span></span><br><span class="line">var_dump($percent); <span class="comment">// int(100)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$number = similar_text(<span class="string">'aaaa'</span>, <span class="string">'aaaabbbb'</span>, $percent);</span><br><span class="line">var_dump($number);  <span class="comment">// int(4)</span></span><br><span class="line">var_dump($percent); <span class="comment">// int(67)</span></span><br><span class="line"></span><br><span class="line">$number = similar_text(<span class="string">'abcdef'</span>, <span class="string">'aabcdefg'</span>, $percent);</span><br><span class="line">var_dump($number);  <span class="comment">// int(6)</span></span><br><span class="line">var_dump($percent); <span class="comment">// int(86)</span></span><br></pre></td></tr></table></figure>
+<h3 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h3><p><code>similar_text</code> 代码可以在 <a href="https://github.com/php/php-src/blob/master/ext/standard/string.c" target="_blank" rel="noopener">github</a> 找到，搜索<code>PHP_FUNCTION(similar_text)</code> 就可以了</p>
+<p>研究了一下发现，主要分为三步：</p>
+<ol>
+<li>找出两个字符串中相同部分最长的一段</li>
+<li>再用同样的方法在剩下的两段中分别找出相同部分最长的一段，以此类推，直到没有任何相同部分</li>
+<li>相似度 = 所有相同部分的长度之和 * 200.0 / 两个字符串的长度之和</li>
+</ol>
+<p>下面是实现相关的代码，中文注释是我加上去进行说明的</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 找出两个字符串中相同部分最长的一段</span></span><br><span class="line"><span class="keyword">static</span> void php_similar_str(<span class="keyword">const</span> char *txt1, size_t len1, <span class="keyword">const</span> char *txt2, size_t len2, size_t *pos1, size_t *pos2, size_t *max)</span><br><span class="line">&#123;</span><br><span class="line">	char *p, *q;</span><br><span class="line">	char *end1 = (char *) txt1 + len1;</span><br><span class="line">	char *end2 = (char *) txt2 + len2;</span><br><span class="line">	size_t l;</span><br><span class="line"></span><br><span class="line">	*max = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// 以第一个字符串为基准开始遍历</span></span><br><span class="line">	<span class="keyword">for</span> (p = (char *) txt1; p &lt; end1; p++) &#123;</span><br><span class="line">		<span class="comment">// 遍历第二个字符串</span></span><br><span class="line">		<span class="keyword">for</span> (q = (char *) txt2; q &lt; end2; q++) &#123;</span><br><span class="line">			<span class="comment">// 发现有字符相同，继续循环找，l为相同部分的长度</span></span><br><span class="line">			<span class="keyword">for</span> (l = <span class="number">0</span>; (p + l &lt; end1) &amp;&amp; (q + l &lt; end2) &amp;&amp; (p[l] == q[l]); l++);</span><br><span class="line">			<span class="comment">// 记录最长的l，和他在两个字符串的位置</span></span><br><span class="line">			<span class="keyword">if</span> (l &gt; *max) &#123;</span><br><span class="line">				*max = l;</span><br><span class="line">				*pos1 = p - txt1;</span><br><span class="line">				*pos2 = q - txt2;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算两个字符串的相同部分的总长度</span></span><br><span class="line"><span class="keyword">static</span> size_t php_similar_char(<span class="keyword">const</span> char *txt1, size_t len1, <span class="keyword">const</span> char *txt2, size_t len2)</span><br><span class="line">&#123;</span><br><span class="line">	size_t sum;</span><br><span class="line">	size_t pos1 = <span class="number">0</span>, pos2 = <span class="number">0</span>, max;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 找出两个字符串相同部分最长的一段</span></span><br><span class="line">	php_similar_str(txt1, len1, txt2, len2, &amp;pos1, &amp;pos2, &amp;max);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 这里是对sum的初始赋值，也是对max值的判断</span></span><br><span class="line">	<span class="comment">// 如果 max == 0，表示两个字符串没有任何相同的字符，则不会进行递归</span></span><br><span class="line">	<span class="keyword">if</span> ((sum = max)) &#123;</span><br><span class="line">		<span class="comment">// 对前半段递归，相同段长度累加</span></span><br><span class="line">		<span class="keyword">if</span> (pos1 &amp;&amp; pos2) &#123;</span><br><span class="line">			sum += php_similar_char(txt1, pos1,</span><br><span class="line">									txt2, pos2);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 对后半段递归，相同段长度累加</span></span><br><span class="line">		<span class="keyword">if</span> ((pos1 + max &lt; len1) &amp;&amp; (pos2 + max &lt; len2)) &#123;</span><br><span class="line">			sum += php_similar_char(txt1 + pos1 + max, len1 - pos1 - max,</span><br><span class="line">									txt2 + pos2 + max, len2 - pos2 - max);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* &#123;&#123;&#123; proto int similar_text(string str1, string str2 [, float percent])</span></span><br><span class="line"><span class="comment">   Calculates the similarity between two strings */</span></span><br><span class="line"><span class="comment">// PHP函数定义</span></span><br><span class="line">PHP_FUNCTION(similar_text)</span><br><span class="line">&#123;</span><br><span class="line">	zend_string *t1, *t2;</span><br><span class="line">	zval *percent = <span class="keyword">NULL</span>;</span><br><span class="line">	int ac = ZEND_NUM_ARGS();</span><br><span class="line">	size_t sim;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 检查参数合法性</span></span><br><span class="line">	<span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">"SS|z/"</span>, &amp;t1, &amp;t2, &amp;percent) == FAILURE) &#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ac &gt; <span class="number">2</span>) &#123;</span><br><span class="line">		convert_to_double_ex(percent);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 如果两个字符串长度都为0，返回0</span></span><br><span class="line">	<span class="keyword">if</span> (ZSTR_LEN(t1) + ZSTR_LEN(t2) == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ac &gt; <span class="number">2</span>) &#123;</span><br><span class="line">			Z_DVAL_P(percent) = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		RETURN_LONG(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 调用上面的函数，计算两个字符串的相似度</span></span><br><span class="line">	sim = php_similar_char(ZSTR_VAL(t1), ZSTR_LEN(t1), ZSTR_VAL(t2), ZSTR_LEN(t2));</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 如果有第三个参数，则改变计算方式</span></span><br><span class="line">	<span class="keyword">if</span> (ac &gt; <span class="number">2</span>) &#123;</span><br><span class="line">		Z_DVAL_P(percent) = sim * <span class="number">200.0</span> / (ZSTR_LEN(t1) + ZSTR_LEN(t2));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	RETURN_LONG(sim);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="进行移植"><a href="#进行移植" class="headerlink" title="进行移植"></a>进行移植</h3><p>因为前文提到的项目主要是用 python 写的，所以我将 similar_text 这个函数移植到了 python，具体代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">similar_str</span><span class="params">(str1, str2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    return the len of longest string both in str1 and str2</span></span><br><span class="line"><span class="string">    and the positions in str1 and str2</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    max_len = tmp = pos1 = pos2 = <span class="number">0</span></span><br><span class="line">    len1, len2 = len(str1), len(str2)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> range(len1):</span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> range(len2):</span><br><span class="line">            tmp = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> p + tmp &lt; len1 <span class="keyword">and</span> q + tmp &lt; len2 \</span><br><span class="line">                    <span class="keyword">and</span> str1[p + tmp] == str2[q + tmp]:</span><br><span class="line">                tmp += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> tmp &gt; max_len:</span><br><span class="line">                max_len, pos1, pos2 = tmp, p, q</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> max_len, pos1, pos2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">similar_char</span><span class="params">(str1, str2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    return the total length of longest string both in str1 and str2</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    max_len, pos1, pos2 = similar_str(str1, str2)</span><br><span class="line">    total = max_len</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> max_len != <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> pos1 <span class="keyword">and</span> pos2:</span><br><span class="line">            total += similar_char(str1[:pos1], str2[:pos2])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> pos1 + max_len &lt; len(str1) <span class="keyword">and</span> pos2 + max_len &lt; len(str2):</span><br><span class="line">            total += similar_char(str1[pos1 + max_len:], str2[pos2 + max_len:]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">similar_text</span><span class="params">(str1, str2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    return a int value in [0, 100], which stands for match level</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> (isinstance(str1, str) <span class="keyword">or</span> isinstance(str1, unicode)):</span><br><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">"must be str or unicode"</span>)</span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> (isinstance(str2, str) <span class="keyword">or</span> isinstance(str2, unicode)):</span><br><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">"must be str or unicode"</span>)</span><br><span class="line">    <span class="keyword">elif</span> len(str1) == <span class="number">0</span> <span class="keyword">and</span> len(str2) == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> int(similar_char(str1, str2) * <span class="number">200.0</span> / (len(str1) + len(str2)))</span><br></pre></td></tr></table></figure>
+<p>也可以在 <a href="https://github.com/luosch/similar_text" target="_blank" rel="noopener">github</a> 上查看</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://github.com/php/php-src" target="_blank" rel="noopener">PHP source code</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/UIColor-HexString/" rel="prev" title="UIColor HexString">
+      <i class="fa fa-chevron-left"></i> UIColor HexString
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/2016-new-plan/" rel="next" title="2016年的计划">
+      2016年的计划 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">函数原型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">原理分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8C%E7%A7%BB%E6%A4%8D"><span class="nav-number">4.</span> <span class="nav-text">进行移植</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Danny Luo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Danny Luo</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
