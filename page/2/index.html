@@ -266,15 +266,15 @@
 
       
           <p>从 windows 迁移到 mac 之后, 命令行操作的时候 rm 永远是一个痛点</p>
-<p>人总难免操作出一些失误，上次就听过一个信科的同学在命令行下用 rm -rf / 的悲剧，然后用移动硬盘恢复了半天233</p>
+<p>人总难免操作出一些失误，上次就听过一个信科的同学在命令行下用 rm -rf &#x2F; 的悲剧，然后用移动硬盘恢复了半天233</p>
 <h3 id="所以我现在采取了下列做法"><a href="#所以我现在采取了下列做法" class="headerlink" title="所以我现在采取了下列做法"></a>所以我现在采取了下列做法</h3><ol>
 <li>用一个移动硬盘做 time machine 备份</li>
 <li>每天下班后，把代码 push 到 vps 搭建的一个私有 git repository 上</li>
 <li>将 rm 命令替换为移动到废纸篓</li>
 </ol>
-<p>mac 的垃圾箱目录为 ~/.Trash </p>
+<p>mac 的垃圾箱目录为 ~&#x2F;.Trash </p>
 <p>（mac 被吐槽废纸篓不能恢复文件, 就是因为 mac 只是简单地将文件移动到这个命令, 而没有像别的操作系统那样追踪文件行为）</p>
-<p>因为我是 zsh 用户，所以我通过编辑 ~/.zshrc 下做一个 alias 来替换 rm<br>（bash 用户编辑 ~/.bashrc）</p>
+<p>因为我是 zsh 用户，所以我通过编辑 ~&#x2F;.zshrc 下做一个 alias 来替换 rm<br>（bash 用户编辑 ~&#x2F;.bashrc）</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2015/mac-safe-rm-replace/#more" rel="contents">
@@ -346,7 +346,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">最近有个同学问我一个问题：给一串拼音，怎样得到所有可能的合法拼音组合，即拼音分词</span><br><span class="line">输入：luosicheng</span><br><span class="line">得到：lu,o,si,cheng 和 luo,si,cheng</span><br></pre></td></tr></table></figure>
+          <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">最近有个同学问我一个问题：给一串拼音，怎样得到所有可能的合法拼音组合，即拼音分词</span><br><span class="line">输入：luosicheng</span><br><span class="line">得到：lu,o,si,cheng 和 luo,si,cheng</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2015/divide-pinyin/#more" rel="contents">
@@ -418,7 +418,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Given a linked list, determine if it has a cycle in it.</span><br><span class="line"></span><br><span class="line">Follow up:</span><br><span class="line">Can you solve it without using extra space?</span><br></pre></td></tr></table></figure>
+          <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Given a linked list, determine if it has a cycle in it.</span><br><span class="line"></span><br><span class="line">Follow up:</span><br><span class="line">Can you solve it without using extra space?</span><br></pre></td></tr></table></figure>
+
 <p>可以使用快慢指针判断，快指针每次走两步，慢指针每次走一步<br>如果有环的话快慢指针一定会相遇，注意判断指针是否为空</p>
           <!--noindex-->
             <div class="post-button">
@@ -498,7 +499,7 @@
 <li>python，使用 flask 框架做后台处理</li>
 <li>笔和纸</li>
 </ol>
-<p>###微信公众号申请<br>去<a href="http://mp.weixin.qq.com" target="_blank" rel="noopener">微信公众平台</a>提交订阅号的申请（还要交身份证照片，怕怕的）</p>
+<p>###微信公众号申请<br>去<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/">微信公众平台</a>提交订阅号的申请（还要交身份证照片，怕怕的）</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2014/sysucuorse-helper/#more" rel="contents">
@@ -571,7 +572,7 @@
 
       
           <p>HTML Geolocation API 可以用来获得用户的地理位置</p>
-<p>支持 Geolocation API 的浏览器/设备：</p>
+<p>支持 Geolocation API 的浏览器&#x2F;设备：</p>
 <ul>
 <li>IE9.0+</li>
 <li>Firefox</li>
@@ -736,8 +737,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/resource/5.png" alt=""></p>
-<p>本博客使用<a href="http://duoshuo.com/" title="多说评论系统" target="_blank" rel="noopener">多说</a>评论系统，发现默认主题太丑了，于是动手改了下</p>
+          <p><img src="/resource/5.png"></p>
+<p>本博客使用<a target="_blank" rel="noopener" href="http://duoshuo.com/" title="多说评论系统">多说</a>评论系统，发现默认主题太丑了，于是动手改了下</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2014/duosuo-css-comment/#more" rel="contents">

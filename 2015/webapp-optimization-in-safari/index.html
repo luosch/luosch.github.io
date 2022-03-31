@@ -201,20 +201,25 @@
 <p>微信内的浏览器是封装了 webview, 然后绑定了点击事件实现长按出现二维码界面，以及通过劫持页面跳转来封杀正常的应用分发(apk 和跳转 app store)</p>
 <p>连跳转 app store这一正常操作都被禁用了，只能跳转到腾讯自家的应用宝<del>为了KPI也是拼</del></p>
 <p>iOS 上大部分应用的内部浏览器封装自 webview，所以我们在调页面的时候要遵循苹果官方文档中关于 webapp 在 safari 的优化说明</p>
-<a id="more"></a>
+<span id="more"></span>
+
 <h3 id="禁止页面缩放"><a href="#禁止页面缩放" class="headerlink" title="禁止页面缩放"></a>禁止页面缩放</h3><p>为了让我们的 webapp 更像一个 native 应用，我们要禁用浏览器的页面缩放功能，在苹果的官方文档中，标准做法是通过 viewport meta 来控制的</p>
 <pre><code>&lt;meta content=&quot;width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0&quot; name=&quot;viewport&quot;&gt;
-</code></pre><p>在 <code>&lt;head&gt;</code> 中添加如上代码即可禁止页面缩放</p>
+</code></pre>
+<p>在 <code>&lt;head&gt;</code> 中添加如上代码即可禁止页面缩放</p>
 <h3 id="文本大小"><a href="#文本大小" class="headerlink" title="文本大小"></a>文本大小</h3><p>有时候，我们会遇到 webapp 的文本太小的问题，这时我们可以通过修改 <code>-webkit-text-size-adjust</code> 属性来解决这个问题</p>
-<pre><code>html {-webkit-text-size-adjust:none} // disable
-html {-webkit-text-size-adjust:auto} // default
-html {-webkit-text-size-adjust:200%} // zoom in
-html {-webkit-text-size-adjust: 50%} // zoom out
-</code></pre><h3 id="输入框"><a href="#输入框" class="headerlink" title="输入框"></a>输入框</h3><p>iOS 的键盘有 <code>autocorrect</code> 和 <code>autocapitalize</code> 的补全和改正功能，但是我们有时并不需要，比如在输入账号和密码的时候，这时我们可以在 <code>&lt;input&gt;</code> 标签设置对应属性来关闭这两个功能</p>
+<pre><code>html &#123;-webkit-text-size-adjust:none&#125; // disable
+html &#123;-webkit-text-size-adjust:auto&#125; // default
+html &#123;-webkit-text-size-adjust:200%&#125; // zoom in
+html &#123;-webkit-text-size-adjust: 50%&#125; // zoom out
+</code></pre>
+<h3 id="输入框"><a href="#输入框" class="headerlink" title="输入框"></a>输入框</h3><p>iOS 的键盘有 <code>autocorrect</code> 和 <code>autocapitalize</code> 的补全和改正功能，但是我们有时并不需要，比如在输入账号和密码的时候，这时我们可以在 <code>&lt;input&gt;</code> 标签设置对应属性来关闭这两个功能</p>
 <pre><code>&lt;input type=&quot;text&quot; name=&quot;account&quot; autocorrect=&quot;none&quot; autocapitalize=&quot;none&quot;&gt;
-</code></pre><h3 id="跳转到本地应用"><a href="#跳转到本地应用" class="headerlink" title="跳转到本地应用"></a>跳转到本地应用</h3><p><img src="https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/Art/smartbanner_2x.png" alt=""></p>
+</code></pre>
+<h3 id="跳转到本地应用"><a href="#跳转到本地应用" class="headerlink" title="跳转到本地应用"></a>跳转到本地应用</h3><p><img src="https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/Art/smartbanner_2x.png"></p>
 <pre><code>&lt;meta name=&quot;apple-itunes-app&quot; content=&quot;app-id=myAppStoreID, affiliate-data=myAffiliateData, app-argument=myURL&quot;&gt;
-</code></pre><h3 id="伪装成-native-app"><a href="#伪装成-native-app" class="headerlink" title="伪装成 native app"></a>伪装成 native app</h3><pre><code>/* 设置保存到桌面的图标 */
+</code></pre>
+<h3 id="伪装成-native-app"><a href="#伪装成-native-app" class="headerlink" title="伪装成 native app"></a>伪装成 native app</h3><pre><code>/* 设置保存到桌面的图标 */
 &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;touch-icon-iphone.png&quot;&gt;
 &lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;76x76&quot; href=&quot;touch-icon-ipad.png&quot;&gt;
 &lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;120x120&quot; href=&quot;touch-icon-iphone-retina.png&quot;&gt;
@@ -225,8 +230,10 @@ html {-webkit-text-size-adjust: 50%} // zoom out
 
 /* 设置顶栏颜色 */
 &lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;
-</code></pre><h3 id="取消电话邮箱的识别"><a href="#取消电话邮箱的识别" class="headerlink" title="取消电话邮箱的识别"></a>取消电话邮箱的识别</h3><pre><code>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no email=no&quot;&gt;
-</code></pre><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/Introduction/Introduction.html#//apple_ref/doc/uid/TP40002051-CH1-SW1" title="webapp for safari" target="_blank" rel="noopener">apple-developer-document</a></p>
+</code></pre>
+<h3 id="取消电话邮箱的识别"><a href="#取消电话邮箱的识别" class="headerlink" title="取消电话邮箱的识别"></a>取消电话邮箱的识别</h3><pre><code>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no email=no&quot;&gt;
+</code></pre>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/Introduction/Introduction.html#//apple_ref/doc/uid/TP40002051-CH1-SW1" title="webapp for safari">apple-developer-document</a></p>
 
     </div>
 
